@@ -1,8 +1,9 @@
+using KitchenMods;
 using Pets.Interfaces;
 
 namespace Pets.Components.Properties
 {
-    public struct CLonelyDistance : IPetProperty
+    public struct CLonelyDistance : IPetProperty, IModComponent
     {
         public float Distance;
 
