@@ -26,8 +26,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Changelogs\" />
-	  <Folder Include="Changelogs\Github" />
-	  <Folder Include="Changelogs\Workshop" />
 	</ItemGroup>
 
 	<ItemGroup>
