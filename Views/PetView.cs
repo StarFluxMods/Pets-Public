@@ -155,7 +155,7 @@ namespace Pets.Views
             
             if (Data.RequestingInputSource == InputSourceIdentifier.Identifier)
             {
-                TextInputView.RequestTextInput(base.Localisation["INPUT_TITLE_RENAME_RESTAURANT"], "", 24, HandleNewName);
+                TextInputView.RequestTextInput("Rename Pet", "", 24, HandleNewName);
             }
         }
 

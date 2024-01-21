@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Kitchen;
 using KitchenData;
+using KitchenLib.Utils;
 using Pets.Components;
 using Pets.Components.Status;
 using Pets.Customs.Types;
@@ -84,27 +85,84 @@ namespace Pets.Systems
 
             return entitiesInRange;
         }
-        
-        protected bool CanGetTo(Vector3 startingPosition, Vector3 targetPosition, Vector3 targetOffset, out Vector3 targetDestination)
-        {
+
+        private GameObject point1;
+        private GameObject point2;
+
+        protected bool CanGetTo(Vector3 startingPosition, Vector3 targetPosition, Vector3 targetOffset, out Vector3 targetDestination, bool ShowDebugSpheres = false)
+        { 
+            if (!ShowDebugSpheres)
+                Mod.Logger.LogInfo("");
+            
+            
+            if (ShowDebugSpheres)
+            {
+                if (point1 != null)
+                    GameObject.Destroy(point1);
+                if (point2 != null)
+                    GameObject.Destroy(point2);
+                
+                point1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                point2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            
+                point1.transform.position = startingPosition;
+                point2.transform.position = targetPosition + targetOffset;
+            
+                point1.transform.localScale = Vector3.one * 0.5f;
+                point2.transform.localScale = Vector3.one * 0.5f;
+            
+                GameObject.Destroy(point1.GetComponent<Collider>());
+                GameObject.Destroy(point2.GetComponent<Collider>());
+            }
+            
             targetDestination = Vector3.zero;
             CLayoutRoomTile tile1 = GetTile(targetPosition);
             CLayoutRoomTile tile2 = GetTile(targetPosition + targetOffset);
-            if (tile1.RoomID != tile2.RoomID) return false;
-            
+
+            if (tile1.RoomID == 0 || tile2.RoomID == 0)
+            {
+                if (ShowDebugSpheres)
+                {
+                    point1.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleRed");
+                    point2.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleRed");
+                }
+                return false;
+            }
+
+            if (tile1.RoomID != tile2.RoomID)
+            {
+                if (ShowDebugSpheres)
+                {
+                    point1.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleRed");
+                    point2.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleRed");
+                }
+                return false;
+            }
+
             NavMesh.CalculatePath(startingPosition, targetPosition + targetOffset, NavMesh.AllAreas, Path);
             
             if (Path.status == NavMeshPathStatus.PathComplete)
                 targetDestination = targetPosition + targetOffset;
-            
-            return Path.status == NavMeshPathStatus.PathComplete;
+
+            if (Path.status != NavMeshPathStatus.PathComplete)
+            {
+                if (ShowDebugSpheres)
+                {
+                    point1.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleRed");
+                    point2.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleRed");
+                }
+                return false;
+            }
+
+            point1.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleGreen");
+            point2.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleGreen");
+            return true;
         }
         
         protected bool GetOffsetPosition(Vector3 forward, Vector2 offset, out Vector2 success)
         {
             success = Vector2.zero;
             float rotation = Mathf.Atan2(forward.x, forward.z) * Mathf.Rad2Deg;
-            Mod.Logger.LogInfo("GetOffsetPosition " + rotation);
             if (rotation == 0)
                 success = offset;
             if (rotation == 90)

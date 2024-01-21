@@ -33,6 +33,12 @@ namespace Pets.Systems.Activities
                 if (!Require(pet, out CMoveToLocation cMoveToLocation)) continue;
                 if (!Require(pet, out CPosition cPosition)) continue;
                 if (!Require(pet, out CCurrentSpeed cCurrentSpeed)) continue;
+                if (cPetInteractingWith.InteractingWith == Entity.Null)
+                {
+                    EntityManager.RemoveComponent<CPetInteractingWith>(pet);
+                    continue;
+                }
+
                 if (cPetInteractingWith.IsWaitingForDestination)
                 {
                     if (Vector3.Distance(cPosition, cMoveToLocation.Location) < 0.1f && cCurrentSpeed.speed < Mod.MinimumSpeedThreshold)

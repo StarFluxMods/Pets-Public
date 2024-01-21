@@ -76,7 +76,7 @@ namespace Pets.Systems.Activities
             {
                 InteractingWith = TargetEntity,
                 StartTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                TimeToFinish = Random.Range(5, 15),
+                TimeToFinish = Random.Range(15, 25),
                 IsWaitingForDestination = true
             });
 
