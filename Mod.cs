@@ -4,12 +4,14 @@ using KitchenLib.Logging.Exceptions;
 using KitchenMods;
 using System.Linq;
 using System.Reflection;
+using Kitchen;
 using Kitchen.Modules;
+using KitchenLib.Event;
 using KitchenLib.Interfaces;
+using KitchenLib.Preferences;
 using KitchenLib.Utils;
 using Pets.Components;
 using Pets.Customs;
-using Pets.Customs.Types;
 using Pets.Menus;
 using Pets.Views;
 using UnityEngine;
@@ -20,12 +22,13 @@ namespace Pets
     {
         public const string MOD_GUID = "com.starfluxgames.pets";
         public const string MOD_NAME = "Pets";
-        public const string MOD_VERSION = "0.1.2";
+        public const string MOD_VERSION = "0.1.3";
         public const string MOD_AUTHOR = "StarFluxGames";
         public const string MOD_GAMEVERSION = ">=1.1.8";
         
         public static AssetBundle Bundle;
         public static KitchenLogger Logger;
+        public static PreferenceManager manager;
         
         public static float MinimumSpeedThreshold = 0.1f;
 
@@ -40,15 +43,16 @@ namespace Pets
                 if (grid.name == "Root")
                 {
                     GridMenuPetConfig config = new GridMenuPetConfig();
-                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Goose>().GameDataObject as Pet);
-                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Penguin>().GameDataObject as Pet);
-                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Cat>().GameDataObject as Pet);
-                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Chick>().GameDataObject as Pet);
-                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Rabbit>().GameDataObject as Pet);
-                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Squirrel>().GameDataObject as Pet);
-                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<DogChihuahua>().GameDataObject as Pet);
-                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Elephant>().GameDataObject as Pet);
-                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Seal>().GameDataObject as Pet);
+                    config.Pets.Add(0);
+                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Goose>().ID);
+                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Penguin>().ID);
+                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Cat>().ID);
+                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Chick>().ID);
+                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Rabbit>().ID);
+                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Squirrel>().ID);
+                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<DogChihuahua>().ID);
+                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Elephant>().ID);
+                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Seal>().ID);
                     config.Icon = Bundle.LoadAsset<Texture2D>("PawPrint");
                     grid.Links.Add(config);
                 }
@@ -59,6 +63,24 @@ namespace Pets
         {
             Bundle = mod.GetPacks<AssetBundleModPack>().SelectMany(e => e.AssetBundles).FirstOrDefault() ?? throw new MissingAssetBundleException(MOD_GUID);
             Logger = InitLogger();
+            
+            manager = new PreferenceManager(MOD_GUID);
+            manager.RegisterPreference(new PreferenceBool("petsHaveColliders", true));
+            manager.Load();
+            manager.Save();
+            
+            ModsPreferencesMenu<MainMenuAction>.RegisterMenu(MOD_NAME, typeof(PreferenceMenu<MainMenuAction>), typeof(MainMenuAction));
+            ModsPreferencesMenu<PauseMenuAction>.RegisterMenu(MOD_NAME, typeof(PreferenceMenu<PauseMenuAction>), typeof(PauseMenuAction));
+            
+            Events.MainMenuView_SetupMenusEvent += (s, args) =>
+            {
+                args.addMenu.Invoke(args.instance, new object[] { typeof(PreferenceMenu<MainMenuAction>), new PreferenceMenu<MainMenuAction>(args.instance.ButtonContainer, args.module_list) });
+            };
+            
+            Events.PlayerPauseView_SetupMenusEvent += (s, args) =>
+            {
+                args.addMenu.Invoke(args.instance, new object[] { typeof(PreferenceMenu<PauseMenuAction>), new PreferenceMenu<PauseMenuAction>(args.instance.ButtonContainer, args.module_list) });
+            };
             
             ViewUtils.RegisterView("Pets.Views.PetRequestView", typeof(SPetRequestView), typeof(PetRequestView));
         }

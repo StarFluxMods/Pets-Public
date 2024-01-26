@@ -90,11 +90,7 @@ namespace Pets.Systems
         private GameObject point2;
 
         protected bool CanGetTo(Vector3 startingPosition, Vector3 targetPosition, Vector3 targetOffset, out Vector3 targetDestination, bool ShowDebugSpheres = false)
-        { 
-            if (!ShowDebugSpheres)
-                Mod.Logger.LogInfo("");
-            
-            
+        {
             if (ShowDebugSpheres)
             {
                 if (point1 != null)
@@ -154,8 +150,12 @@ namespace Pets.Systems
                 return false;
             }
 
-            point1.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleGreen");
-            point2.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleGreen");
+            if (ShowDebugSpheres)
+            {
+                point1.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleGreen");
+                point2.GetComponent<MeshRenderer>().material = MaterialUtils.GetExistingMaterial("AppleGreen");
+            }
+            
             return true;
         }
         

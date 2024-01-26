@@ -37,6 +37,7 @@ namespace Pets.Customs.Types
             view.agent = Prefab.GetComponentInChildren<NavMeshAgent>();
             view.animator = Prefab.GetComponentInChildren<Animator>();
             view.vfx = Prefab.GetComponentInChildren<VisualEffect>();
+            view.Colliders = new List<Collider>(Prefab.GetComponentsInChildren<Collider>());
             TextMeshPro tmp = Prefab.GetComponentInChildren<TextMeshPro>();
             if (tmp != null)
             {

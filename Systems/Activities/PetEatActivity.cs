@@ -53,7 +53,7 @@ namespace Pets.Systems.Activities
                 if (!Require(foodEntity, out CPosition cFoodPosition)) continue;
                 
                 Vector3 targetPos = Vector3.zero;
-                
+
                 if (!CanGetTo(data.PetPosition, cFoodPosition, new Vector3(1 + offset, 0, 0), out targetPos))
                     if (!CanGetTo(data.PetPosition, cFoodPosition, new Vector3(-1 - offset, 0, 0), out targetPos))
                         if (!CanGetTo(data.PetPosition, cFoodPosition, new Vector3(0, 0, 1 + offset), out targetPos))

@@ -12,6 +12,7 @@ namespace Pets.Menus
             return new PetGridMenu(Pets, container, player, has_back);
         }
 
-        public List<Pet> Pets = new List<Pet>();
+        public List<Pet> _Pets = new List<Pet>();
+        public List<int> Pets = new List<int>();
     }
 }

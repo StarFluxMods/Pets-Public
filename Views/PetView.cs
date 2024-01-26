@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Controllers;
 using Kitchen;
 using KitchenData;
+using KitchenLib.Preferences;
 using KitchenMods;
 using MessagePack;
 using Pets.Components;
@@ -22,6 +24,7 @@ namespace Pets.Views
         public VisualEffect vfx;
         public GameObject warningIcon;
         public TextMeshPro label;
+        public List<Collider> Colliders;
         
         public override void SetPosition(UpdateViewPositionData pos)
         {
@@ -81,7 +84,8 @@ namespace Pets.Views
                         PreferedFacingDirection = PreferedFacingDirection,
                         State = cPet.State,
                         RequestingInputSource = RequestingInputSource,
-                        PetName = cPet.PetName.Value
+                        PetName = cPet.PetName.Value,
+                        EnableColliders = Mod.manager.GetPreference<PreferenceBool>("petsHaveColliders").Value
                     });
                     if (ApplyUpdates(cLinkedView, (data) =>
                         {
@@ -131,6 +135,7 @@ namespace Pets.Views
             [Key(4)] public PetState State;
             [Key(5)] public int RequestingInputSource;
             [Key(6)] public string PetName;
+            [Key(7)] public bool EnableColliders;
         }
 
         [MessagePackObject(false)]
@@ -225,6 +230,14 @@ namespace Pets.Views
             {
                 label.font = GameData.Main.GlobalLocalisation.Fonts[KitchenData.Font.Default];
                 label.text = Data.PetName;
+            }
+
+            if (Colliders != null)
+            {
+                foreach (Collider collider in Colliders)
+                {
+                    collider.enabled = Data.EnableColliders;
+                }
             }
         }
     }
