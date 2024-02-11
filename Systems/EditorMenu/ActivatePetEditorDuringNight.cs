@@ -1,4 +1,5 @@
 using Kitchen;
+using KitchenLib.Preferences;
 using KitchenMods;
 using Pets.Components;
 using Pets.Components.Menu;
@@ -14,11 +15,15 @@ namespace Pets.Systems.EditorMenu
 
         protected override void Perform(ref InteractionData data)
         {
-            EntityManager.AddComponentData(data.Target, new CTriggerPetEditor
+            int petInteractionMode = Mod.manager.GetPreference<PreferenceInt>("petInteractionMode").Value;
+            if (petInteractionMode == 0 || petInteractionMode == 1)
             {
-                IsTriggered = true,
-                TriggerEntity = data.Interactor
-            });
+                EntityManager.AddComponentData(data.Target, new CTriggerPetEditor
+                {
+                    IsTriggered = true,
+                    TriggerEntity = data.Interactor
+                });
+            }
         }
     }
 }

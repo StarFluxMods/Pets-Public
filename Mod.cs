@@ -22,7 +22,7 @@ namespace Pets
     {
         public const string MOD_GUID = "com.starfluxgames.pets";
         public const string MOD_NAME = "Pets";
-        public const string MOD_VERSION = "0.1.3";
+        public const string MOD_VERSION = "0.1.4";
         public const string MOD_AUTHOR = "StarFluxGames";
         public const string MOD_GAMEVERSION = ">=1.1.8";
         
@@ -53,6 +53,7 @@ namespace Pets
                     config.Pets.Add(GDOUtils.GetCustomGameDataObject<DogChihuahua>().ID);
                     config.Pets.Add(GDOUtils.GetCustomGameDataObject<Elephant>().ID);
                     config.Pets.Add(GDOUtils.GetCustomGameDataObject<Seal>().ID);
+                    config.Pets.Add(GDOUtils.GetCustomGameDataObject<Panda>().ID);
                     config.Icon = Bundle.LoadAsset<Texture2D>("PawPrint");
                     grid.Links.Add(config);
                 }
@@ -66,6 +67,7 @@ namespace Pets
             
             manager = new PreferenceManager(MOD_GUID);
             manager.RegisterPreference(new PreferenceBool("petsHaveColliders", true));
+            manager.RegisterPreference(new PreferenceInt("petInteractionMode", 0)); // 0 = Always, 1 = Night Only, 2 = Day Only
             manager.Load();
             manager.Save();
             
