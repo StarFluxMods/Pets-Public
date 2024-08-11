@@ -15,6 +15,7 @@ using Pets.Customs;
 using Pets.Menus;
 using Pets.Views;
 using UnityEngine;
+using KitchenLogger = KitchenLib.Logging.KitchenLogger;
 
 namespace Pets
 {
@@ -22,7 +23,7 @@ namespace Pets
     {
         public const string MOD_GUID = "com.starfluxgames.pets";
         public const string MOD_NAME = "Pets";
-        public const string MOD_VERSION = "0.1.4";
+        public const string MOD_VERSION = "0.1.5";
         public const string MOD_AUTHOR = "StarFluxGames";
         public const string MOD_GAMEVERSION = ">=1.1.8";
         
@@ -71,17 +72,17 @@ namespace Pets
             manager.Load();
             manager.Save();
             
-            ModsPreferencesMenu<MainMenuAction>.RegisterMenu(MOD_NAME, typeof(PreferenceMenu<MainMenuAction>), typeof(MainMenuAction));
-            ModsPreferencesMenu<PauseMenuAction>.RegisterMenu(MOD_NAME, typeof(PreferenceMenu<PauseMenuAction>), typeof(PauseMenuAction));
+            ModsPreferencesMenu<MenuAction>.RegisterMenu(MOD_NAME, typeof(PreferenceMenu<MenuAction>), typeof(MenuAction));
+            ModsPreferencesMenu<MenuAction>.RegisterMenu(MOD_NAME, typeof(PreferenceMenu<MenuAction>), typeof(MenuAction));
             
             Events.MainMenuView_SetupMenusEvent += (s, args) =>
             {
-                args.addMenu.Invoke(args.instance, new object[] { typeof(PreferenceMenu<MainMenuAction>), new PreferenceMenu<MainMenuAction>(args.instance.ButtonContainer, args.module_list) });
+                args.addMenu.Invoke(args.instance, new object[] { typeof(PreferenceMenu<MenuAction>), new PreferenceMenu<MenuAction>(args.instance.ButtonContainer, args.module_list) });
             };
             
             Events.PlayerPauseView_SetupMenusEvent += (s, args) =>
             {
-                args.addMenu.Invoke(args.instance, new object[] { typeof(PreferenceMenu<PauseMenuAction>), new PreferenceMenu<PauseMenuAction>(args.instance.ButtonContainer, args.module_list) });
+                args.addMenu.Invoke(args.instance, new object[] { typeof(PreferenceMenu<MenuAction>), new PreferenceMenu<MenuAction>(args.instance.ButtonContainer, args.module_list) });
             };
             
             ViewUtils.RegisterView("Pets.Views.PetRequestView", typeof(SPetRequestView), typeof(PetRequestView));
